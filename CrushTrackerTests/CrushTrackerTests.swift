@@ -11,26 +11,29 @@ import XCTest
 
 class CrushTrackerTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    //MARK: Movie class test
+    
+    //Confirm that movie initializier return obj when passes valid params
+    func testMovieInitializationSucceeds(){
+        let zeroRatingMeal = Movie.init(name: "Zero", rating: 0, image: nil)
+        XCTAssertNotNil(zeroRatingMeal)
+        
+        // Highest positive rating
+        let positiveRatingMeal = Movie.init(name: "highest", rating: 5, image: nil)
+        XCTAssertNotNil(positiveRatingMeal)
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    //confirm that movie initializer return nil with invalid params
+    func testMovieInitializationFails(){
+        //Negative rating
+        let negativeRatingMeal = Movie.init(name: "Negative", rating: -1, image: nil)
+        XCTAssertNil(negativeRatingMeal)
+        // Rating exceeds maximum
+        let largeRatingMeal = Movie.init(name: "Large", rating: 6, image: nil)
+        XCTAssertNil(largeRatingMeal)
+        // Empty String
+        let emptyStringMeal = Movie.init(name: "", rating: 0, image: nil)
+        XCTAssertNil(emptyStringMeal)
     }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }
