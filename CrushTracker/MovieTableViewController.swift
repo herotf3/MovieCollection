@@ -32,6 +32,8 @@ class MovieTableViewController: UITableViewController {
             //Add to table view
             let indexPath=IndexPath(row: movies.count-1, section: 0)
             self.tableView.insertRows(at: [indexPath], with: .automatic)    //tableView is a prop of base class UITAbleViewCtrl
+            
+            saveMovies()
         }
     }
     
@@ -62,12 +64,32 @@ class MovieTableViewController: UITableViewController {
         movies+=[movie1,movie2,movie3,movie4,movie5]
         
     }
+    //Save movie to local
+    private func saveMovies() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(self.movies, toFile: Movie.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("Movies successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save movies...", log: OSLog.default, type: .error)
+        }
+    }
+    private func loadMeals() -> [Movie]? {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: Movie.ArchiveURL.path) as? [Movie]
+    }
+    //-----
     override func viewDidLoad() {
         super.viewDidLoad()
         //edit btn provided by table view controller
         self.navigationItem.leftBarButtonItem = editButtonItem
-        //load sample data
-        loadSampleMovie()
+        
+        if let savedMovies = loadMeals(){
+            movies+=savedMovies
+        }
+            else{
+            //load sample data
+            loadSampleMovie()
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -122,6 +144,7 @@ class MovieTableViewController: UITableViewController {
         if editingStyle == .delete {
             // Delete the row from the data source
             movies.remove(at: indexPath.row)
+            saveMovies()
             tableView.deleteRows(at: [indexPath], with: .fade)            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
