@@ -15,14 +15,23 @@ class MovieViewController: UIViewController,UITextFieldDelegate, UIImagePickerCo
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
+    @IBOutlet weak var ratingControl: RatingControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         // Handle the text field’s user input through delegate callbacks.
         nameField.delegate=self
+        //enable save btn only if name field is not empty
+        updateSaveBtnState()
         
-        
+        //display movie data if existing (use case: view detail )
+        if let movie=movie {
+            navigationItem.title=movie.name
+            nameField.text=movie.name
+            photoImageView.image=movie.image
+            ratingControl.rating=movie.rating
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,6 +47,13 @@ class MovieViewController: UIViewController,UITextFieldDelegate, UIImagePickerCo
             os_log("The save button was not pressed, cancelling", log: OSLog.default, type: .debug)
             return
         }
+        //
+        let name = nameField.text ?? ""
+        let img = photoImageView.image
+        let rating = ratingControl.rating
+        // Set the meal to be passed to MealTableViewController after the unwind segue.
+        movie=Movie(name: name, rating: rating, image: img)
+        
     }
     
     //MARK: Actions
@@ -61,14 +77,33 @@ class MovieViewController: UIViewController,UITextFieldDelegate, UIImagePickerCo
     @IBAction func saveNewMovie(_ sender: UIBarButtonItem) {
         print("Saved a movie!")
     }
+    //Cancel action
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        let isInAddMealMode = presentingViewController is UINavigationController
+        
+        if isInAddMealMode {
+            dismiss(animated: true, completion: nil )
+        }else {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
     
     //MARK: UITextFieldDelegate
     func textFieldShouldReturn(_ textField: UITextField) -> Bool{
         textField.resignFirstResponder()
         return true
     }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveBtn.isEnabled=false
+    }
+    private func updateSaveBtnState(){
+        //Disable save btn if nameField is empty
+        let text=nameField.text ?? ""
+        saveBtn.isEnabled = !text.isEmpty
+    }
     func textFieldDidEndEditing(_ textField: UITextField){
-        
+        updateSaveBtnState()
+        self.navigationItem.title=nameField.text
     }
     
     //MARK: UIPickerController delegate

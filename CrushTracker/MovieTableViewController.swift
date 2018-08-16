@@ -7,11 +7,35 @@
 //
 
 import UIKit
+import os.log
 
 class MovieTableViewController: UITableViewController {
     //MARK: props
     var movies = [Movie]()
     
+    //MARK: Actions
+    @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
+        //get movie obj from sender's source
+        //with downcasting sender.source & checking valid obj
+        if let movieViewCtrl=sender.source as? MovieViewController,
+            let newMovie=movieViewCtrl.movie {
+            //Update a movie
+            if let indexPath=tableView.indexPathForSelectedRow {
+                //a row is selected
+                movies[indexPath.row]=newMovie
+                tableView.reloadRows(at: [indexPath], with: .none)
+                return
+            }
+            
+            //Add new movie to list
+            movies.append(newMovie)
+            //Add to table view
+            let indexPath=IndexPath(row: movies.count-1, section: 0)
+            self.tableView.insertRows(at: [indexPath], with: .automatic)    //tableView is a prop of base class UITAbleViewCtrl
+        }
+    }
+    
+    //MARK: Private methods
     private func loadSampleMovie(){
         let img1=UIImage(named: "phim0")
         let img2=UIImage(named: "phim1")
@@ -40,7 +64,9 @@ class MovieTableViewController: UITableViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        //edit btn provided by table view controller
+        self.navigationItem.leftBarButtonItem = editButtonItem
+        //load sample data
         loadSampleMovie()
     }
 
@@ -56,7 +82,6 @@ class MovieTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return movies.count
     }
 
@@ -83,25 +108,26 @@ class MovieTableViewController: UITableViewController {
 //    }
     
 
-    /*
+    
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    */
+ 
 
-    /*
+    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            movies.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
+    
 
     /*
     // Override to support rearranging the table view.
@@ -118,14 +144,42 @@ class MovieTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        super.prepare(for: segue, sender: sender)
+        
+        switch segue.identifier ?? "" {
+        case "AddItem":
+            os_log("Adding a new meal.", log: OSLog.default, type: .debug)
+            
+        case "ShowDetail":
+            os_log("Show Detail",log: OSLog.default, type: .debug)
+            //get destination of segue
+            guard let movieDetailViewCtrl=segue.destination as? MovieViewController
+            else{
+                fatalError("Unexpected destination of segue \(segue.destination)")
+            }
+            //get the cell view triggering this event
+            guard let selectedMovieCell=sender as? MovieTableViewCell else{
+                fatalError("Unexpected sender \(sender ?? "undefined")")
+            }
+            //get index of selected cell in tableview
+            guard let indexPath=tableView.indexPath(for: selectedMovieCell) else{
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            //get data in that cell
+            let movie = movies[indexPath.row]
+            //send obj data to destination view controller
+            movieDetailViewCtrl.movie=movie
+        default:
+            fatalError("Unexpected Segue Identifier; \(segue.identifier ?? "undefined")")
+        }
     }
-    */
+    
 
 }

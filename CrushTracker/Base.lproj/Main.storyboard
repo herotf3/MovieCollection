@@ -27,9 +27,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="119.66666666666667"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DefaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="H9T-y1-uU2">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="phim0" translatesAutoresizingMaskIntoConstraints="NO" id="H9T-y1-uU2">
                                             <rect key="frame" x="8" y="19" width="90" height="90"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vp3-vA-oZn">
                                             <rect key="frame" x="106" y="25" width="296" height="21"/>
@@ -48,6 +48,7 @@
                                     <outlet property="movieLabel" destination="vp3-vA-oZn" id="xlA-oB-0Zz"/>
                                     <outlet property="posterImgView" destination="H9T-y1-uU2" id="Btq-5O-jsw"/>
                                     <outlet property="ratingView" destination="btb-xe-Pcv" id="ueh-IA-97b"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="ShowDetail" id="ASn-EO-LUK"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -59,7 +60,7 @@
                     <navigationItem key="navigationItem" title="Your Movies" id="MUT-iH-6Lm">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="b8a-oj-xi9">
                             <connections>
-                                <segue destination="ErK-ua-U3P" kind="presentation" id="iPb-Ow-6Re"/>
+                                <segue destination="ErK-ua-U3P" kind="presentation" identifier="AddItem" id="iPb-Ow-6Re"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -85,7 +86,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                     </textField>
-                                    <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="DefaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="WmT-vt-hKf">
+                                    <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="DefaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="WmT-vt-hKf">
                                         <rect key="frame" x="0.0" y="36" width="404" height="404"/>
                                         <gestureRecognizers/>
                                         <constraints>
@@ -118,20 +119,27 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Add a movie" id="pYO-DR-VKe">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="pje-7N-K5L"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="pje-7N-K5L">
+                            <connections>
+                                <action selector="cancel:" destination="BYZ-38-t0r" id="9jX-Ka-U77"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Save" id="waW-cl-F2j">
                             <connections>
                                 <action selector="saveNewMovie:" destination="BYZ-38-t0r" id="oUF-r0-FI9"/>
+                                <segue destination="ZsI-Kt-6o4" kind="unwind" unwindAction="unwindToMealListWithSender:" id="BRU-hG-UIO"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="nameField" destination="sHf-oO-uoG" id="3cG-Kt-KB2"/>
                         <outlet property="photoImageView" destination="WmT-vt-hKf" id="qwH-YI-GPr"/>
+                        <outlet property="ratingControl" destination="lPr-Nk-rVu" id="B22-wA-tQX"/>
                         <outlet property="saveBtn" destination="waW-cl-F2j" id="5mJ-wW-ArS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <exit id="ZsI-Kt-6o4" userLabel="Exit" sceneMemberID="exit"/>
                 <tapGestureRecognizer id="92Z-fo-Nev">
                     <connections>
                         <action selector="selectImageFromLib:" destination="BYZ-38-t0r" id="Zit-DR-gTP"/>
@@ -174,10 +182,14 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="22L-gh-y4G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1024.6376811594205" y="118.20652173913044"/>
+            <point key="canvasLocation" x="1043" y="490"/>
         </scene>
     </scenes>
     <resources>
         <image name="DefaultPhoto" width="200" height="200"/>
+        <image name="phim0" width="200" height="300"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ASn-EO-LUK"/>
+    </inferredMetricsTieBreakers>
 </document>
